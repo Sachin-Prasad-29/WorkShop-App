@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Workshop App</title>
+    <link rel="stylesheet" href="/libs/fontawesome-free-6.1.1-web/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="/libs/bootstrap-5.2.0-beta1-dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/res/style/custom.css" />
+  </head>
+  <body>
+    <main class="container my-5">
+      <h1>Workshop App</h1>
+      <hr />
+      <div class="row">
+        <p id="operation-status"></p>
+        <div class="col-sm-9 px-3" id="workshops"></div>
+        <div class="col-sm-3">
+          <h3>Add a Workshop</h3>
+          <small>All form inputs are mandatory</small>
+          <p id="form-submit-status"></p>
+          <form id="add-workshop-form">
+            <div class="mb-3">
+              <label for="name" class="form-label fw-semibold">Name of Workshop</label>
+              <input type="text" class="form-control" id="name" />
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label fw-semibold">Description</label>
+              <textarea
+                type="text"
+                class="form-control"
+                id="description"
+                placeholder="Enter the details of the workshop"
+              ></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="startTime" class="form-label fw-semibold">Start Date</label>
+              <input type="date" class="form-control" id="startDate" />
+            </div>
+            <div class="mb-3">
+              <label for="endDate" class="form-label fw-semibold">End Date</label>
+              <input type="date" class="form-control" id="endDate" />
+            </div>
+            <div class="mb-3">
+              <label for="time" class="form-label fw-semibold">Time</label>
+              <input type="text" class="form-control" id="time" />
+            </div>
+            <div class="mb-3">
+              <label> <input type="checkbox" value="online" name="modes" id="online" /> Online </label>
+              <label> <input type="checkbox" value="inPerson" name="modes" id="inPerson" /> In-person </label>
+            </div>
+            <div class="mb-3">
+              <label for="imageUrl" class="form-label fw-semibold">Image URL</label>
+              <input type="url" class="form-control" id="imageUrl" />
+            </div>
+
+            <button type="submit" class="btn btn-primary fw-semibold">Add a Workshop</button>
+          </form>
+        </div>
+      </div>
+    </main>
+    <script src="/libs/bootstrap-5.2.0-beta1-dist/js/bootstrap.min.js"></script>
+    <script src="/res/scripts/index.js"></script>
+  </body>
+</html>
