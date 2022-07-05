@@ -4,8 +4,9 @@
 
 // now we will write  the function to fetch the list of workshop
 let workshops = []; // global veriable
-let isEditing =false;
-let edite
+let isEditing = false;
+let editedWorkshopId = -1;
+
 function fetchWorkshop() {
   fetch(`https://workshops-server.herokuapp.com/workshops`) // this URl will give the data here fetch promise function
     .then((response) => {
@@ -77,7 +78,6 @@ function addWorkshop(event) {
   const imageUrl = document.querySelector("#imageUrl").value;
   const online = document.querySelector("#online").checked;
   const inPerson = document.querySelector("#inPerson").checked;
-
   // Gather the data to be sent to the backend
   const newWorkshop = {
     name: name,
@@ -90,7 +90,6 @@ function addWorkshop(event) {
     },
     imageUrl: imageUrl,
   };
-
   // If form is invalid then do not go ahead with submission to backend
   if (
     name === "" ||
@@ -107,15 +106,20 @@ function addWorkshop(event) {
     formSubmitStatusEl.innerHTML = "Form has errors. Please correct them and try again !";
     return;
   }
-
   // go head and submit to the backend
   // display the success message
-  formSubmitStatusEl.classList.remove("alert-danger p-2 rounded-2 alert");
-  formSubmitStatusEl.classList.add("alert-success p-2 rounded-2 alert");
+  formSubmitStatusEl.classList.remove("alert-danger");
+  formSubmitStatusEl.classList.add("alert-success");
   formSubmitStatusEl.innerHTML = "Form has been Submitted";
 
-  fetch(`https://workshops-server.herokuapp.com/workshops`, {
-    method: "POST",
+  const url = isEditing
+    ? `https://workshops-server.herokuapp.com/workshops/${editedWorkshopId}`
+    : `https://workshops-server.herokuapp.com/workshops`;
+  const method = isEditing ? 'PUT' : 'POST';
+
+  //send the data to the backend
+  fetch(url, {
+    method: method,
     body: JSON.stringify(newWorkshop),
     headers: {
       "Content-Type": "application/json",
@@ -128,11 +132,19 @@ function addWorkshop(event) {
       return response.json();
     })
     .then((data) => {
-      workshops = [...workshops, data];
-      addWorkshopToList(data);
+      if (isEditing) {
+        const selectedWorkshopIndex = workshops.findIndex((workshop) => workshop.id === editedWorkshopId);
+        workshops.splice(selectedWorkshopIndex, 1, data);
+        showWorkshops();
+        isEditing = false;
+      } else {
+        workshops = [...workshops, data];
+        addWorkshopToList(data);
+      }
     })
     .catch((error) => {
       alert(error.message);
+      isEditing = false;
     });
 }
 // delete workshop method
@@ -146,21 +158,21 @@ function deleteWorkshop(workShopId, workShopCard) {
       workShopCard.remove();
 
       // display the success message
-      operationStatusEl.classList.remove("alert-danger p-2 rounded-2 alert");
-      operationStatusEl.classList.add("alert-success p-2 rounded-2 alert");
+      operationStatusEl.classList.remove("alert-danger");
+      operationStatusEl.classList.add("alert-success");
       operationStatusEl.innerHTML = "Workshop have been deleted";
     })
     .catch((error) => {
-      operationStatusEl.classList.remove("alert-success p-2 rounded-2 alert");
-      operationStatusEl.classList.add("alert-danger p-2 rounded-2 alert");
+      operationStatusEl.classList.remove("alert-success");
+      operationStatusEl.classList.add("alert-danger");
       operationStatusEl.innerHTML = error.message;
     });
 }
-
 // fillForm to edit the card
 function fillForm(workShopId, workShopCard) {
   //set that we are in edit mode
   isEditing = true;
+  editedWorkshopId=workShopId;
   const operationStatusEl = document.querySelector("#operation-status");
 
   //get the details of the workshop Id
@@ -176,10 +188,14 @@ function fillForm(workShopId, workShopCard) {
   document.querySelector("#online").checked = selectedWorkshop.online;
   document.querySelector("#inPerson").checked = selectedWorkshop.inPerson;
 }
+
+
+
 // setup event handler on page load
 window.addEventListener("load", function () {
   fetchWorkshop(); // call this function when page is loaded
 });
+
 
 // when the form is submitted having id add-workshop-form
 const form = document.querySelector("#add-workshop-form");
